@@ -24,17 +24,19 @@ console.log(findSequence(arr1, arr2));
 
 let arr = [-4, -2, 1, 3];
 
-function toMach(arr) {
-  let emptyArr = [];
+function sortedSquares(arr) {
+  const emptyArr = new Array(arr.length);
   let startIndx = 0;
   let IndexForEmptyArray = arr.length - 1;
   let finishIndx = arr.length - 1;
   while (startIndx <= finishIndx) {
-    if (arr[startIndx] ** 2 > arr[finishIndx] ** 2) {
-      emptyArr[IndexForEmptyArray] = arr[startIndx] ** 2;
+    const leftSquare = arr[startIndx] ** 2;
+    const rightSquare = arr[finishIndx] ** 2;
+    if (leftSquare > rightSquare) {
+      emptyArr[IndexForEmptyArray] = leftSquare;
       startIndx++;
     } else {
-      emptyArr[IndexForEmptyArray] = arr[finishIndx] ** 2;
+      emptyArr[IndexForEmptyArray] = rightSquare;
       finishIndx--;
     }
     IndexForEmptyArray--;
@@ -42,4 +44,4 @@ function toMach(arr) {
   return emptyArr;
 }
 
-console.log(toMach(arr));
+console.log(sortedSquares(arr));
