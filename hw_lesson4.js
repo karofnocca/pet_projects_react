@@ -23,22 +23,22 @@ console.log(findSequence(arr1, arr2));
 ("use strict");
 
 let arr = [-4, -2, 1, 3];
-let emptyArr = [];
-
-let startIndx = 0;
-let finishIndx = arr.length - 1;
 
 function toMach(arr) {
-  while (startIndx !== finishIndx) {
+  let emptyArr = [];
+  let startIndx = 0;
+  let IndexForEmptyArray = arr.length - 1;
+  let finishIndx = arr.length - 1;
+  while (startIndx <= finishIndx) {
     if (arr[startIndx] ** 2 > arr[finishIndx] ** 2) {
-      emptyArr.unshift(arr[startIndx] ** 2);
+      emptyArr[IndexForEmptyArray] = arr[startIndx] ** 2;
       startIndx++;
-    } else if (arr[startIndx] ** 2 < arr[finishIndx] ** 2) {
-      emptyArr.unshift(arr[finishIndx] ** 2);
+    } else {
+      emptyArr[IndexForEmptyArray] = arr[finishIndx] ** 2;
       finishIndx--;
     }
+    IndexForEmptyArray--;
   }
-  emptyArr.unshift(arr[finishIndx] ** 2);
   return emptyArr;
 }
 
