@@ -12,7 +12,9 @@ function finalSum(num, target) {
   var finishIndex = num.length - 1;
   while (startIndex < finishIndex) {
     var sumOfnumbers = num[startIndex] + num[finishIndex];
-    if (Math.abs(target - sumOfnumbers) < Math.abs(target - maxValue)) {
+    var divWithSum = target - sumOfnumbers;
+    var divWithMax = target - maxValue;
+    if (Math.abs(divWithSum) < Math.abs(divWithMax)) {
       maxValue = sumOfnumbers;
       resultNumbers = [num[startIndex], num[finishIndex]];
     }
@@ -43,12 +45,7 @@ function findWinTeam(compititions, result) {
   for (let i = 0; i < compititions.length; i++) {
     let homeTeam = compititions[i][0];
     let guestTeam = compititions[i][1];
-    let winningTeam;
-    if (result[i] === 1) {
-      winningTeam = homeTeam;
-    } else {
-      winningTeam = guestTeam;
-    }
+    let winningTeam = result[i] === 1 ? homeTeam : guestTeam;
     if (scoreOfTeam[winningTeam] !== undefined) {
       scoreOfTeam[winningTeam] += 3;
     } else {
