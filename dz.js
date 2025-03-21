@@ -172,6 +172,21 @@ class BinaryTree {
     };
     this.rootNode = remove(this.rootNode, value);
   }
+
+  replace(initValue, newValue) {
+    const replaceValue = (node) => {
+      if (!node) return;
+      if (node.value === initValue) {
+        node.value = newValue;
+      }
+      if (initValue > node.value) {
+        replaceValue(node.right);
+      } else {
+        replaceValue(node.left);
+      }
+    };
+    replaceValue(this.rootNode);
+  }
 }
 
 // replace(initValue, newValue) {}
@@ -200,4 +215,4 @@ console.log(tree);
 // *********: ПОДУМАТЬ КАК ИСПОЛЬЗОВАТЬ traverse() внутри метода add() и возможно внутри remove и replace
 const sum = tree.getSum();
 const remove = tree.removeChild(12);
-// console.log(sum);
+const replaceNode = tree.replace(2, 8);
