@@ -187,11 +187,9 @@ class TreeVisualizer {
   init(currentLayerNodes = [this.tree.rootNode]) {
     this.createLayer(currentLayerNodes);
 
-    const nextLayerNodes = [];
-
     let onlyNullNodes = true;
 
-    currentLayerNodes.forEach((node) => {
+    const nextLayerNodes = currentLayerNodes.reduce((acc, node) => {
       if (node !== null) {
         const { left, right } = node;
 
@@ -199,15 +197,12 @@ class TreeVisualizer {
           onlyNullNodes = false;
         }
 
-        nextLayerNodes.push(left);
-        nextLayerNodes.push(right);
+        acc.push(left, right);
       }
-    });
+      return acc;
+    }, []);
 
-    if (!nextLayerNodes.length || onlyNullNodes) {
-      return;
-    }
-
+    if (nextLayerNodes.every((node) => node === null)) return;
     this.init(nextLayerNodes);
   }
 
