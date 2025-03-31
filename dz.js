@@ -1,5 +1,3 @@
-"use strict";
-
 class TreeNode {
   #value;
 
@@ -83,26 +81,14 @@ class BinaryTree {
     this.rootNode = root;
   }
 
-  traverse(node = this.rootNode, sumFunc) {
-    if (!node) return;
-
-    if (sumFunc) sumFunc(node.value);
-
+  traverse(node = this.rootNode) {
     if (node.left) {
-      this.traverse(node.left, sumFunc);
+      this.traverse(node.left);
     }
 
     if (node.right) {
-      this.traverse(node.right, sumFunc);
+      this.traverse(node.right);
     }
-  }
-
-  getSum() {
-    let sum = 0;
-    this.traverse(this.rootNode, (value) => {
-      sum += value;
-    });
-    return sum;
   }
 
   // node - TreeNode
@@ -123,55 +109,9 @@ class BinaryTree {
   }
 
   // child - TreeNode или числом
+  removeChild(child) {}
 
-  // removeNode(node) {  ТУТ я пытался сделать не каскадное удаление, а с заменой, но че то пошло не так
-  //   const remove = (node, value) => {
-  //     if (!node) return null;
-  //   };
-  //   if (value < node.value) {
-  //     node.left = remove(node.value, value);
-  //     return node;
-  //   } else if (this.value > node.value) {
-  //     node.right = remove(node.value, value);
-  //     return node;
-  //   } else {
-  //     if (!node.left && !node.right) {
-  //       return null;
-  //     }
-
-  //     if (!node.left) return node.right;
-  //     if (!node.right) return node.left;
-
-  //     let newNodeValue = node.right;
-  //     node.right = remove(node.right, newNodeValue);
-  //     return node;
-  //     }
-  //   }
-
-  removeChild(value) {
-    //каскадное удаление
-    const remove = (node, value) => {
-      if (!node) return null;
-      if (node.value === value) {
-        if (node.left) {
-          node.left = remove(node.left, node.left.value);
-        }
-        if (node.right) {
-          node.right = remove(node.right, node.right.value);
-        }
-        return null;
-      }
-      if (value < node.value) {
-        node.left = remove(node.left, value);
-        return node;
-      }
-      if (value > node.value) {
-        node.right = remove(node.right, value);
-        return node;
-      }
-    };
-    this.rootNode = remove(this.rootNode, value);
-  }
+  getSum(callback) {}
 
   replace(initValue, newValue) {
     const replaceValue = (node) => {
@@ -185,11 +125,10 @@ class BinaryTree {
         replaceValue(node.left);
       }
     };
+
     replaceValue(this.rootNode);
   }
 }
-
-// replace(initValue, newValue) {}
 
 //treeData number[]
 const createTree = (rootNode, treeData) => {
@@ -204,15 +143,184 @@ const createTree = (rootNode, treeData) => {
   return tree;
 };
 
+///////////////////////// ТУТ ВИЗУАЛИЗАЦИЯ:
+
+const ROOT_ELEMENT = document.getElementById("root");
+
+class TreeNodeVisualizer {
+  // node - либо нода либо null (для того чтобы рисовать пустые кружки)
+  constructor(node) {
+    this.node = node;
+  }
+
+  append(layerElement) {
+    const nodeElement = document.createElement("div");
+
+    if (this.node === null) {
+      nodeElement.className = "emptyNode";
+    } else {
+      nodeElement.className = "node";
+      nodeElement.innerText = this.node.value;
+    }
+
+    layerElement.appendChild(nodeElement);
+  }
+}
+
+class TreeVisualizer {
+  constructor(binaryTree) {
+    if (!(binaryTree instanceof BinaryTree)) {
+      return;
+    }
+
+    const treeElement = document.createElement("div");
+    treeElement.className = "tree";
+    this.element = treeElement;
+
+    ROOT_ELEMENT.appendChild(treeElement);
+
+    this.tree = binaryTree;
+    this.layers = [];
+  }
+
+  // ДОМАШНЕЕ ЗАДАНИЕ: переделать формирование массива nextLayerNodes на reduce
+  init(currentLayerNodes = [this.tree.rootNode]) {
+    this.createLayer(currentLayerNodes);
+
+    const nextLayerNodes = [];
+
+    let onlyNullNodes = true;
+
+    currentLayerNodes.forEach((node) => {
+      if (node !== null) {
+        const { left, right } = node;
+
+        if (left || right) {
+          onlyNullNodes = false;
+        }
+
+        nextLayerNodes.push(left);
+        nextLayerNodes.push(right);
+      }
+    });
+
+    if (!nextLayerNodes.length || onlyNullNodes) {
+      return;
+    }
+
+    this.init(nextLayerNodes);
+  }
+
+  // nodes - массив TreeNode | null
+  createLayer(nodes) {
+    const layerElement = document.createElement("div");
+
+    layerElement.className = "layer";
+
+    nodes.forEach((node) => {
+      const nodeVisualizer = new TreeNodeVisualizer(node);
+
+      nodeVisualizer.append(layerElement);
+    });
+
+    this.element.appendChild(layerElement);
+
+    this.layers.push(layerElement);
+
+    return layerElement;
+  }
+
+  // ДОМАШНЕЕ ЗАДАНИЕ: сделать так чтобы гэпы в леерах были нормальныe
+  updateLayersGap() {
+    const deepness = this.layers.length;
+
+    this.layers.forEach((layer, index) => {
+      if (index === 1) layer.style = "gap: 360px";
+      if (index === 2) layer.style = "gap: 180px";
+      if (index === 3) layer.style = "gap: 80px";
+      if (index === 4) layer.style = "gap: 45px";
+      if (index === 5) layer.style = "gap: 30px";
+    });
+  }
+}
+
+class InputComponent {
+  constructor({ parent, label }) {
+    this.parent = parent;
+    this.label = label;
+  }
+
+  init() {
+    const inputContainer = document.createElement("div");
+    const inputEl = document.createElement("input");
+    const fieldsetEl = document.createElement("fieldset");
+    const legendEl = document.createElement("legend");
+
+    inputContainer.className = "inputContainer";
+
+    fieldsetEl.className = "fieldset";
+
+    inputEl.type = "number";
+
+    inputEl.inputMode = "numeric";
+
+    inputContainer.appendChild(inputEl);
+    inputContainer.appendChild(fieldsetEl);
+    fieldsetEl.appendChild(legendEl);
+
+    this.parent.appendChild(inputContainer);
+  }
+}
+
+class TreeValueChangeForm {
+  constructor(tree) {
+    if (!(tree instanceof BinaryTree)) {
+      throw "Это не дерево";
+    }
+    this.tree = tree;
+  }
+
+  // форма спавнится на экране
+  init() {
+    const formEl = document.createElement("form");
+
+    formEl.className = "changeValueForm";
+
+    const prevValueInput = new InputComponent({
+      parent: formEl,
+      label: "Старое значение",
+    });
+    prevValueInput.init();
+
+    // const newValueInput = new InputComponent({
+    //   parent: formEl,
+    //   label: "Новое значение",
+    // });
+    // newValueInput.init();
+
+    ROOT_ELEMENT.appendChild(formEl);
+  }
+
+  onSubmit() {}
+}
+
 const rootNode = new TreeNode(8);
 
-const tree = createTree(rootNode, [4, 12, 2, 5, 3, 7, 9, 10, 14]);
+const tree = createTree(
+  rootNode,
+  [4, 12, 2, 5, 3, 7, 9, 10, 14, 16, 8, 1, 20, 15, 23, 19]
+);
 
-console.log(tree);
+const visualizedTree = new TreeVisualizer(tree);
 
-// ДОМАШНЕЕ ЗАДАНИЕ:
-// написать remove (каскадный) и реплейс и getSum
-// *********: ПОДУМАТЬ КАК ИСПОЛЬЗОВАТЬ traverse() внутри метода add() и возможно внутри remove и replace
-const sum = tree.getSum();
-const remove = tree.removeChild(12);
-const replaceNode = tree.replace(2, 8);
+const visualizedNode = new TreeNodeVisualizer(rootNode);
+
+visualizedTree.init();
+
+visualizedTree.updateLayersGap();
+
+const treeForm = new TreeValueChangeForm(tree);
+
+treeForm.init();
+
+// visualizedNode.append(layer);
