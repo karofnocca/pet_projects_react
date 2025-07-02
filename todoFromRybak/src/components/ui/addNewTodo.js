@@ -1,4 +1,4 @@
-import { loadData } from "../../app.js";
+import { loadData } from "./loadData.js";
 import { showError } from "../../utils/helpers.js";
 import { addTodo } from "../../API/index.js";
 

@@ -5,4 +5,7 @@ export * from "./ui/addNewTodo.js";
 export * from "./inits/initAddTodo.js";
 export * from "./ui/updateTask.js";
 export * from "./inits/initDowload.js";
-export * from './inits/changeStatus.js'
+export * from "./inits/changeStatus.js";
+export * from "./inits/initDelete.js";
+export * from "./ui/renderData.js";
+export * from "./ui/loadData.js";
