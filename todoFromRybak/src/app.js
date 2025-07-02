@@ -3,21 +3,17 @@ import {
   initDeleteCompleted,
   initAddTodo,
   updateTask,
+  initDownload,
+  downloadButton,
+  changeStatus,
 } from "./components/index.js";
 
-import {
-  getTodos,
-  toggleTodoStatus,
-  deleteTodo,
-  updateTodo,
-  addTodo,
-} from "./API/index.js";
+import { getTodos, deleteTodo } from "./API/index.js";
 
 import { showError, showLoader, hideLoader } from "./utils/helpers.js";
 
 export const container = document.getElementById("posts-container");
 
-const downloadButton = document.querySelector(".button-download");
 export const deleteCompletedButton = document.getElementById(
   "delete-completed-button"
 );
@@ -54,15 +50,8 @@ function renderData(todos) {
     checkBox.type = "checkbox";
     checkBox.checked = todo.completed;
 
-    checkBox.addEventListener("change", async () => {
-      try {
-        await toggleTodoStatus(todo.id, checkBox.checked);
-        await loadData();
-      } catch (error) {
-        console.error(error.message);
-        showError("Не удалось изменить статус задачи");
-      }
-    });
+    changeStatus(todo, checkBox);
+
     const textElement = document.createElement("p");
     textElement.style.textDecoration = todo.completed ? "line-through" : "none";
 
@@ -131,7 +120,6 @@ function renderData(todos) {
   });
 }
 
-downloadButton.addEventListener("click", loadData);
-
 initAddTodo();
 initDeleteCompleted();
+initDownload();
