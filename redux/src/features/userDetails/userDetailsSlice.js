@@ -9,7 +9,7 @@ export default function userDetailReducer(state = initState, action) {
         ...state,
         selectedUserId: action.payload,
       };
-    case "userDetail/clearSelectUser": {
+    case "userDetail/clearSelecte .User": {
       return {
         ...state,
         selectedUserId: null,
