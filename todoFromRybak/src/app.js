@@ -1,4 +1,4 @@
-import { initDragAndDrop } from "./components/index.js";
+import { initDragAndDrop, initDeleteCompleted } from "./components/index.js";
 
 import {
   getTodos,
@@ -15,11 +15,11 @@ export const container = document.getElementById("posts-container");
 const taskInput = document.getElementById("task-input");
 const addButton = document.getElementById("add-button");
 const downloadButton = document.querySelector(".button-download");
-const deleteCompletedButton = document.getElementById(
+export const deleteCompletedButton = document.getElementById(
   "delete-completed-button"
 );
 
-async function loadData() {
+export async function loadData() {
   try {
     showLoader();
 
@@ -174,29 +174,6 @@ async function addNewTodo() {
   }
 }
 
-deleteCompletedButton.addEventListener("click", async () => {
-  const { isConfirmed } = await Swal.fire({
-    title: "Вы уверены?",
-    text: "Вы не сможете вернуть их обратно",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonColor: "#3085d6",
-    cancelButtonColor: "#d33",
-    confirmButtonText: "Да, удалить",
-    cancelButtonText: "Отменить",
-  });
-
-  if (!isConfirmed) return;
-
-  try {
-    await deleteCompletedTodos(container);
-    await loadData();
-  } catch (error) {
-    console.error(error.message);
-    showError("Не удалось удалить список задач");
-  }
-});
-
 addButton.addEventListener("click", addNewTodo);
 taskInput.addEventListener("keydown", (e) => {
   if (e.key === "Enter") {
@@ -204,3 +181,5 @@ taskInput.addEventListener("keydown", (e) => {
   }
 });
 downloadButton.addEventListener("click", loadData);
+
+initDeleteCompleted();
